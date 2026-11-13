@@ -11,6 +11,11 @@ Tudo que surgir durante a versão 1 e não for essencial para a demonstração v
 ## Mensagens
 
 - **Lembrete no dia da aula:** de manhã, o treinador recebe o resumo dos alunos daquela turma.
+- **Mensagem de incentivo nos dias de aula** (pedido do treinador): de manhã, o n8n pede ao Gemini uma sugestão de mensagem para a turma, usando o contexto da semana (como recordes), e envia ao treinador no Telegram. Ele ajusta e envia no grupo da turma.
+
+## Provas
+
+- **Registro de provas e metas:** as metas de 1, 3 e 5 km sem parar são batidas em provas, não nos treinos. Um registro próprio de provas permitiria comemorar as metas com o aluno.
 
 ## Uso real
 

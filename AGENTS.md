@@ -16,14 +16,14 @@ Nesta fase, o projeto é uma **demonstração funcional** com uma **turma fictí
   * A meta dos iniciantes é correr 5 km sem parar, passando por 1 km e 3 km.
   * Ele varia os treinos de propósito: alguns são leves, outros são pesados, conforme o objetivo. Por isso, **um treino leve não significa que é hora de progredir**. Só o treinador sabe a intenção de cada treino para cada aluno.
   * O que ele quer saber é **como o aluno sentiu o treino e por quê**, para decidir se ajusta.
-* **Princípio da versão 1:** o sistema **não interpreta** se o treino foi adequado. Ele coleta, organiza, avisa sobre **fatos** (dor, meta batida, recorde) e resume. Toda avaliação é do treinador.
+* **Princípio da versão 1:** o sistema **não interpreta** se o treino foi adequado. Ele coleta, organiza, avisa sobre **fatos** (dor e recorde) e resume. Toda avaliação é do treinador.
 * **Arquitetura:**
   * **Google Forms**: registro pós-aula. A primeira pergunta é o **apelido**, numa lista com os apelidos da aba `Alunos`; cada aluno recebe um **link pré-preenchido** com o próprio apelido.
   * **Google Sheets**:
     * `Respostas`: respostas do Forms (uma linha por registro), mais as colunas `Código do treino` e `Recorde`, preenchidas pela automação.
     * `Alunos`: apelido e contato de cada aluno.
     * `Treinos`: `Código`, `Nome padrão`, `Tipo` (Contínuo / Intervalado / Distância), `Corrida (min)`, `Caminhada (min)`, `Repetições`, `Distância (km)`, `Chave`, `Status` (Aprovado / Aguardando treinador / Recusado), `Origem` (Treinador / Aluno via IA), `Criado em`.
-    * `Painel`: os registros da semana por aluno (treino, esforço e porquê), com destaque para **dor**, **meta batida** e **recorde**, e a lista de treinos aguardando aprovação.
+    * `Painel`: os registros da semana por aluno (treino, esforço e porquê), com destaque para **dor** e **recorde**, e a lista de treinos aguardando aprovação.
   * **Apps Script**: mantém a lista de treinos do Forms igual aos treinos com status "Aprovado".
   * **n8n**: liga tudo (interpretação de treinos, aprovação, alertas, mensagens, resumo semanal, fluxo de erro).
   * **Gemini**: interpreta treinos descritos em texto livre, resume os porquês da semana para o treinador e escreve as mensagens dos alunos.
@@ -32,21 +32,21 @@ Nesta fase, o projeto é uma **demonstração funcional** com uma **turma fictí
   1. `Apelido` (lista da aba `Alunos`)
   2. `Qual foi o treino` (lista dos treinos aprovados + "Outro")
   3. `Descreva o treino` (só se escolheu "Outro")
-  4. `Completou o treino?` (Sim, sem pausas / Sim, com pausas extras / Não completei)
-  5. `Maior tempo correndo sem parar (min)` (número)
-  6. `Distância corrida sem parar (km)` (número; só se o treino foi por distância)
-  7. `Esforço` (0 a 10)
-  8. `O que mais influenciou como você se sentiu?` (múltipla escolha: Já me acostumei com esse treino / Estava descansado / Estava cansado ou dormi mal / Clima / Alimentação / Dor ou desconforto / A cabeça ajudou / A cabeça atrapalhou / Outro)
-  9. `Sentiu dor?` (Nenhuma / Leve / Moderada / Forte) e `Onde?` (só se marcou dor)
-  10. `Bateu alguma meta?` (Não / 1 km sem parar / 3 km sem parar / 5 km sem parar)
-  11. `Quer contar algo ao treinador?` (opcional)
+  4. `Completou o treino?` (Completei o treino / Completei o treino com pausas / Não completei o treino)
+  5. `Esforço` (0 a 10)
+  6. `O rendimento do seu treino foi influenciado por qual motivo?` (múltipla escolha: Clima bom / Clima ruim / Já me acostumei com esse treino / Estava descansado / Estava cansado ou dormi mal / Alimentação / Dor ou desconforto / A cabeça ajudou / A cabeça atrapalhou / Outro)
+  7. `Sentiu dor?` (Nenhuma / Leve / Moderada / Forte) e `Onde?` (só se marcou dor)
+  8. `Maior tempo correndo sem parar (min)` (número)
+  9. `Maior distância corrida sem parar (km)` (número; só se o treino foi por distância)
+  10. `Quer contar algo ao treinador?` (opcional)
+* **Metas de 1, 3 e 5 km** são batidas em **provas**, não nos treinos. Por isso o formulário pós-aula não pergunta sobre metas (ver `VERSAO-2.md`).
 * **Lista de treinos automática** (quando o aluno escolhe "Outro"):
   * O Gemini recebe a descrição e a lista atual de treinos e responde em **saída estruturada** (JSON), seguindo `skills/interpretar-treino`: treino **existente**, **novo** ou **não entendido**.
   * **Sem duplicatas:** o n8n processa os registros com "Outro" **em fila, um por vez**, e confere a `Chave` (ex.: `intervalado-5-1-6`) antes de criar. A IA interpreta; a regra garante.
   * Um treino novo entra como "Aguardando treinador", e o treinador recebe **uma única mensagem no Telegram** com os botões **Aprovar** e **Recusar**. Alunos que descreverem o mesmo treino depois são ligados a ele sem nova mensagem.
   * Ao aprovar, o n8n grava o status e chama o **Apps Script**, que atualiza a lista do Forms. Ao recusar, os registros ligados vão para revisão no `Painel`. O status também pode ser mudado direto na planilha.
 * **Skills deste projeto** (carregue só quando a tarefa pedir):
-  * `skills/regras-dos-avisos/`: regras e casos de teste dos fatos que geram aviso ou destaque (dor, meta, recorde). Use ao mexer em fórmulas, no painel ou nos alertas.
+  * `skills/regras-dos-avisos/`: regras e casos de teste dos fatos que geram aviso ou destaque (dor e recorde). Use ao mexer em fórmulas, no painel ou nos alertas.
   * `skills/interpretar-treino/`: prompt, formato de saída e casos de teste da interpretação de treinos e do fluxo de aprovação. Use ao mexer no caminho "Outro" ou na aba `Treinos`.
   * `skills/tom-das-mensagens/`: prompts, tom e cenários de teste do resumo ao treinador e das mensagens aos alunos. Use ao escrever ou alterar qualquer mensagem.
 
@@ -69,7 +69,7 @@ Nesta fase, o projeto é uma **demonstração funcional** com uma **turma fictí
 - [ ] Um registro com "Outro" é ligado a um treino existente, cria um treino "Aguardando treinador" ou fica para revisão, conforme `skills/interpretar-treino`.
 - [ ] Três alunos que descrevem o mesmo treino novo geram **um** treino e **uma** mensagem de aprovação.
 - [ ] Quando o treinador toca em "Aprovar" no Telegram, o treino aparece na lista do Forms sem ação manual.
-- [ ] Dor moderada ou forte gera alerta ao treinador; meta batida gera parabéns ao aluno; recorde aparece destacado no painel e no resumo.
+- [ ] Dor moderada ou forte gera alerta ao treinador; recorde aparece destacado no painel, no resumo e na mensagem semanal do aluno.
 - [ ] O resumo semanal chega ao treinador, com uma linha por aluno explicando como foi a semana e por quê.
 - [ ] Os casos de teste das três skills passam, com o resultado salvo em `testes/`.
 - [ ] Se qualquer etapa do n8n falhar, chega um aviso.

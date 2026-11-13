@@ -10,10 +10,10 @@ Para decidir a evolução de cada aluno, ele precisa saber **como o aluno sentiu
 
 ## A solução
 
-Depois de cada aula, o aluno responde um formulário curto (menos de 1 minuto): qual foi o treino, se completou, quanto correu sem parar, o esforço, **o que influenciou como ele se sentiu**, se teve dor e se bateu alguma meta.
+Depois de cada aula, o aluno responde um formulário curto (menos de 1 minuto): qual foi o treino, se completou, o esforço, **o que influenciou o rendimento**, se teve dor e quanto correu sem parar.
 
 - **O treinador** vê os registros organizados por aluno, recebe um **alerta na hora** quando alguém relata dor moderada ou forte, aprova pelo celular os **treinos novos** que os alunos descrevem e, toda semana, recebe um **resumo** com uma linha por aluno explicando como foi a semana e por quê.
-- **O aluno** recebe parabéns quando bate uma meta e uma mensagem semanal reconhecendo a constância e os **recordes**.
+- **O aluno** recebe uma mensagem semanal reconhecendo a constância e os **recordes**.
 
 O sistema não avalia se o treino foi adequado: **quem interpreta e decide é o treinador**.
 
@@ -43,20 +43,19 @@ flowchart LR
     TG --> F["📝 Formulário<br/>ganha a opção nova"]
     P --> N["⚙️ n8n<br/>automações"]
     N -->|dor moderada ou forte| AL["🚨 Alerta<br/>para o treinador"]
-    N -->|meta batida| G2["✨ Gemini<br/>escreve o parabéns"]
-    G2 --> AM["💬 Mensagem<br/>para o aluno"]
     N -->|toda semana| G3["✨ Gemini<br/>resume os porquês"]
     G3 --> R["📨 Resumo da turma<br/>para o treinador"]
+    G3 --> MA["💬 Mensagem semanal<br/>para o aluno"]
 ```
 
 ## Como a IA é usada
 
 - **Interpretar treinos:** quando o aluno descreve o treino com as próprias palavras, o Gemini transforma a frase num treino padronizado e verifica se ele já existe, com resposta em formato fixo (saída estruturada). Uma conferência por regra impede duplicatas, e treinos novos só aparecem para a turma depois que o treinador aprova.
 - **Resumir os porquês:** no resumo semanal, o Gemini junta os registros de cada aluno numa frase que o treinador lê em segundos, sem julgar e sem sugerir o que fazer.
-- **Escrever as mensagens dos alunos:** parabéns por meta e mensagem semanal.
+- **Escrever a mensagem semanal dos alunos**, reconhecendo a constância e os recordes.
 - **Construir o projeto:** o Antigravity, agente de código, lê o `AGENTS.md` e as skills deste repositório para montar as automações e os testes seguindo as regras do projeto.
 
-Os prompts seguem o método **GCCD** (objetivo, contexto, restrições e critério de pronto) e foram testados no Google AI Studio antes de entrar na automação. Os avisos dependem só de fatos (dor, meta batida e recorde), calculados sem IA.
+Os prompts seguem o método **GCCD** (objetivo, contexto, restrições e critério de pronto) e foram testados no Google AI Studio antes de entrar na automação. Os avisos dependem só de fatos (dor e recorde), calculados sem IA.
 
 ## Tecnologias
 
@@ -78,7 +77,7 @@ README.md                        Esta apresentação
 AGENTS.md                        Regras do projeto para o agente de código
 VERSAO-2.md                      Ideias para as próximas versões
 skills/
-  regras-dos-avisos/SKILL.md     As regras de dor, meta e recorde, com casos de teste
+  regras-dos-avisos/SKILL.md     As regras de dor e recorde, com casos de teste
   interpretar-treino/SKILL.md    Prompt, formato de resposta, aprovação e casos de teste dos treinos
   tom-das-mensagens/SKILL.md     Prompts, tom e cenários de teste das mensagens
 apps-script/                     O script que atualiza a lista de treinos do formulário
@@ -92,7 +91,7 @@ As **skills** são instruções que o agente de código carrega só quando a tar
 
 O comportamento do projeto é verificado com dados fictícios:
 
-- **8 casos** para os avisos: dor, meta e recordes (incluindo empate e primeiro registro)
+- **7 casos** para os avisos: dor e recordes (incluindo empate e primeiro registro)
 - **11 casos** para os treinos: ordem invertida, erros de digitação, frase vaga, tentativa de manipular o texto e três alunos descrevendo o mesmo treino ao mesmo tempo
 - **8 cenários** para as mensagens, incluindo dor relatada, aluno sem registros e tentativa de manipular o resumo pelo campo de recado
 
