@@ -20,10 +20,11 @@ Nesta fase, o projeto é uma **demonstração funcional** com uma **turma fictí
 * **Arquitetura:**
   * **Google Forms**: registro pós-aula. A primeira pergunta é o **apelido**, numa lista com os apelidos da aba `Alunos`; cada aluno recebe um **link pré-preenchido** com o próprio apelido.
   * **Google Sheets**:
-    * `Respostas`: respostas do Forms (uma linha por registro), mais as colunas `Código do treino` e `Recorde`, preenchidas pela automação.
-    * `Alunos`: apelido e contato de cada aluno.
+    * `Respostas`: respostas do Forms (uma linha por registro). Só o Forms escreve aqui, exceto a coluna `Código do treino`, que o n8n preenche quando o aluno escolhe "Outro".
+    * `Registros`: lê a aba `Respostas` com fórmulas de matriz e acrescenta o código e o nome do treino (pela aba `Treinos`) e o **recorde**. Fórmulas não ficam na aba `Respostas`, porque o Forms insere linhas novas e elas não acompanhariam.
+    * `Alunos`: apelido, contato e link pré-preenchido de cada aluno.
     * `Treinos`: `Código`, `Nome padrão`, `Tipo` (Contínuo / Intervalado / Distância), `Corrida (min)`, `Caminhada (min)`, `Repetições`, `Distância (km)`, `Chave`, `Status` (Aprovado / Aguardando treinador / Recusado), `Origem` (Treinador / Aluno via IA), `Criado em`.
-    * `Painel`: os registros da semana por aluno (treino, esforço e porquê), com destaque para **dor** e **recorde**, e a lista de treinos aguardando aprovação.
+    * `Painel`: lê a aba `Registros` e mostra os registros dos últimos 7 dias por aluno (treino, esforço e porquê), com destaque para **dor** e **recorde**, e a lista de treinos aguardando aprovação.
   * **Apps Script**: mantém a lista de treinos do Forms igual aos treinos com status "Aprovado".
   * **n8n**: liga tudo (interpretação de treinos, aprovação, alertas, mensagens, resumo semanal, fluxo de erro).
   * **Gemini**: interpreta treinos descritos em texto livre, resume os porquês da semana para o treinador e escreve as mensagens dos alunos.
