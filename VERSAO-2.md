@@ -10,6 +10,7 @@ Tudo que surgir durante a versão 1 e não for essencial para a demonstração v
 
 ## Mensagens
 
+- **Mensagens sem marcar gênero:** ajustar os prompts para evitar "obrigado/obrigada" e outras palavras que marcam gênero, já que o apelido nem sempre deixa isso claro.
 - **Lembrete no dia da aula:** de manhã, o treinador recebe o resumo dos alunos daquela turma.
 - **Mensagem de incentivo nos dias de aula** (pedido do treinador): de manhã, o n8n pede ao Gemini uma sugestão de mensagem para a turma, usando o contexto da semana (como recordes), e envia ao treinador no Telegram. Ele ajusta e envia no grupo da turma.
 
