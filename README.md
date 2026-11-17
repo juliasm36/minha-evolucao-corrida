@@ -92,7 +92,7 @@ As **skills** são instruções que o agente de código carrega só quando a tar
 O comportamento do projeto é verificado com dados fictícios:
 
 - **7 casos** para os avisos: dor e recordes (incluindo empate e primeiro registro)
-- **11 casos** para os treinos: ordem invertida, erros de digitação, frase vaga, tentativa de manipular o texto e três alunos descrevendo o mesmo treino ao mesmo tempo
+- **12 casos** para os treinos: ordem invertida, erros de digitação, frase vaga, tentativa de manipulação, treino implausível para iniciantes e três alunos descrevendo o mesmo treino ao mesmo tempo
 - **8 cenários** para as mensagens, incluindo dor relatada, aluno sem registros e tentativa de manipular o resumo pelo campo de recado
 
 ## Andamento
